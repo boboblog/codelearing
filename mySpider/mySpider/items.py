@@ -19,11 +19,11 @@ class JobItem(scrapy.Item):
     # 发布时间
     release_time = scrapy.Field()
     # 职位信息
-    job_detail = scrapy.Field()
-    # 联系方式
-    contact_way = scrapy.Field()
+    position_detail = scrapy.Field()
     # 公司信息
     company_detail = scrapy.Field()
+    # 联系方式
+    contact_way = scrapy.Field()
 
 
 class ItcastItem(scrapy.Item):

@@ -41,9 +41,6 @@ class DoubanSpider(scrapy.Spider):
                 'comment': comment
             }
         next_url = response.css('a.next::attr(href)').extract_first()
-        print('------------------------'
-              '------------------------'
-              'next_url= '+next_url)
         if next_url:
             yield Request(url=response.url[:response.url.find('?')]+next_url,
                           callback=self.parse_comments,
