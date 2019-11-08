@@ -26,9 +26,6 @@ class ItcastSpider(scrapy.Spider):
             name = each.xpath("h3/text()").extract()
             title = each.xpath("h4/text()").extract()
             info = each.xpath("p/text()").extract()
-
-            print(name, title, info)
-
             # xpath返回的是一个元素的列表
             item['name'] = name[0]
             item['title'] = title[0]
