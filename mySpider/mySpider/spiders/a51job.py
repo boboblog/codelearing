@@ -1,6 +1,8 @@
 # -*- coding: utf-8 -*-
 import scrapy
 from scrapy.http.request import Request
+from ..items import JobItem
+from ..items import JobItemLoader
 
 
 class A51jobSpider(scrapy.Spider):
@@ -24,14 +26,14 @@ class A51jobSpider(scrapy.Spider):
             detail_url = item.css('p.t1 > span > a::attr(href)').extract_first()
             company_name = item.css('span.t2 > a::text').extract_first()
             workplace = item.css('span.t3::text').extract_first()
-            pay = item.css('span.t4::text').extract_first()
-            release_time = item.css('span.t5::text').extract_first()
+            salary = item.css('span.t4::text').extract_first()
+            published_time = item.css('span.t5::text').extract_first()
             yield {
                 'job_name': job_name,
                 'company_name': company_name,
                 'workplace': workplace,
-                'pay': pay,
-                'release_time': release_time
+                'salary': salary,
+                'published_time': published_time
             }
             if detail_url is not None:
                 yield Request(url=detail_url, callback=self.parse_detail, dont_filter=True,
@@ -40,7 +42,7 @@ class A51jobSpider(scrapy.Spider):
         next_url = response.css('li.bk > a::attr(href)').extract()[-1]
         # 当前页数
         on = int(response.css('div.p_in > ul > li.on::text').extract_first())
-        if on < 1:
+        if on < 10:
             if next_url:
                 # dont_filter，消除allowed_domains的限制
                 yield Request(url=next_url, callback=self.parse_list, dont_filter=True)
