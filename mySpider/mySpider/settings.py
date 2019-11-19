@@ -74,7 +74,8 @@ DOWNLOAD_DELAY = 2
 # See https://docs.scrapy.org/en/latest/topics/item-pipeline.html
 ITEM_PIPELINES = {# item处理方式
     # 'mySpider.pipelines.MySpiderPipeline': 300,
-    'mySpider.pipelines.MySpiderPipeline': 1
+    # 'mySpider.pipelines.MySpiderPipeline': 1,
+    'mySpider.pipelines.ElasticSearchPipeline': 1
 }
 
 # Enable and configure the AutoThrottle extension (disabled by default)

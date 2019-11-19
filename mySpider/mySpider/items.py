@@ -77,7 +77,7 @@ class JobItem(scrapy.Item):
     salary = scrapy.Field(output_processor=TakeFirst())
     # 公司名称
     company_name = scrapy.Field(output_processor=TakeFirst())
-    job_position = scrapy.Field(input_processor=MapCompose(clean_xa0), output_processor=TakeFirst())
+    workplace = scrapy.Field(input_processor=MapCompose(clean_xa0), output_processor=TakeFirst())
     experience = scrapy.Field(input_processor=MapCompose(clean_xa0), output_processor=TakeFirst())
     education = scrapy.Field(input_processor=MapCompose(clean_xa0), output_processor=TakeFirst())
     # 招聘人数
@@ -93,19 +93,6 @@ class JobItem(scrapy.Item):
     location = scrapy.Field(input_processor=MapCompose(location_process), output_processor=TakeFirst())
     # 公司详情
     company_detail = scrapy.Field(input_processor=MapCompose(clean_xa0), output_processor=Join("\n"))
-
-    def get_insert_sql(self):
-        insert_sql = """
-            insert into jobbole(url, job_name, salary, company, job_position,experience,education,number_of_people,
-            published_time,position_detail,position_type,location,company_detail)
-            VALUES (%s, %s, %s, %s, %s, %s, %s, %d, %s, %s, %s, %s, %s)
-        """
-        params = (
-            self["url"], self["job_name"], self["salary"], self["company"], self["job_position"], self["experience"],
-            self["education"], self["number_of_people"], self["published_time"], self["position_detail"],
-            self["position_type"], self["location"], self["company_detail"])
-
-        return insert_sql, params
 
     def gen_suggests(self, info_tuple):
         # 根据字符串生成搜索建议数组
@@ -124,7 +111,7 @@ class JobItem(scrapy.Item):
         return suggests
 
     def fill_item(self):
-        keys = ['url', 'job_name', 'salary', 'company', 'job_position', 'experience', 'education', 'number_of_people',
+        keys = ['url', 'job_name', 'salary', 'company_name', 'workplace',  'experience', 'education', 'number_of_people',
                 'published_time', 'position_detail', 'position_type', 'location', 'company_detail']
         for key in keys:
             try:
@@ -138,19 +125,19 @@ class JobItem(scrapy.Item):
         job = JobType()
         job.url = self['url']
         job.job_name = self['job_name']
+        job.location = self['location']
         job.salary = self['salary']
-        job.company = self['company']
-        job.job_position = self['job_position']
+        job.company_name = self['company_name']
         job.experience = self['experience']
         job.education = self['education']
         job.number_of_people = self['number_of_people']
         job.published_time = self['published_time']
         job.position_detail = self['position_detail']
         job.position_type = self['position_type']
-        job.location = self['location']
+        job.workplace = self['workplace']
         job.company_detail = self['company_detail']
 
-        job.suggest = self.gen_suggests(((job.job_name, 10), (job.company, 3), (job.position_type, 7)))  # 生成搜索建议词
+        job.suggest = self.gen_suggests(((job.job_name, 10), (job.company_name, 3), (job.position_type, 7)))  # 生成搜索建议词
 
         job.save()
 
